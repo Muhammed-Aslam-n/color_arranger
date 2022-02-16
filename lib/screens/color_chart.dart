@@ -1,22 +1,15 @@
 import 'package:color_arranger/widget/common_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+
+import '../controller/getx_controller.dart';
 
 class Chart extends StatelessWidget {
-  final ValueNotifier<List<Map<String, dynamic>>>? palletList;
 
-  Chart({this.palletList, Key? key}) : super(key: key);
-  final scoreList = [
-    "78",
-    "66",
-    "59",
-    "43",
-    "36",
-    "29",
-    "17",
-    "14",
-    "9",
-  ];
+  final colorChangerController = ColorChangerController.colorChangerController;
+
+  Chart({ Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +34,9 @@ class Chart extends StatelessWidget {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
-                      return buildColorPallet(index, palletList!.value[index]['name'][0],context, palletList!.value[index]['color']);
+                      return buildColorPallet(index, colorChangerController.palletList![index]['name'][0],context,colorChangerController.palletList![index]['color']);
                     },
-                    itemCount: palletList!.value.length,
+                    itemCount: colorChangerController.palletList!.length,
                   ),
                 ),
                 SizedBox(height: 20.h,),
@@ -51,7 +44,8 @@ class Chart extends StatelessWidget {
                   text: "START",
                   bgColor: Colors.green,
                   onPressed: () {
-                    Navigator.popAndPushNamed(context, '/home');
+                    Get.back();
+                    colorChangerController.resetPalletList();
                   },
                 ),
               ],
@@ -68,27 +62,16 @@ class Chart extends StatelessWidget {
         Align(alignment: Alignment.bottomRight, child: Text((index+1).toString()+".")),
         Expanded(
           child: ListTile(
-            leading: Container(color:selectColor(name),height: 50,width: 60,),
-            title: Text(name),
-            subtitle: Text(scoreList[index]+" PTS"),
+        visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
+            leading: Container(color:colorChangerController.selectColor(name),height: 50,width: 60,),
+            title: Text(name,style: const TextStyle(fontSize: 15),),
+            subtitle: Text(colorChangerController.scoreList[index]+" PTS",style: TextStyle(color: Colors.grey.shade700,fontWeight: FontWeight.w600),),
           ),
         ),
       ],
     );
   }
 
-  selectColor(color){
-    switch(color){
-      case "BLACK" : return Colors.black;
-      case "RED" : return Colors.red;
-      case "YELLOW" : return Colors.yellow;
-      case "BLUE" : return Colors.blue;
-      case "GREEN" : return Colors.green;
-      case "ORANGE" : return Colors.orange;
-      case "PINK" : return Colors.pink;
-      case "PURPLE" : return Colors.purple;
-      case "TEAL" : return Colors.teal;
-    }
-  }
+
 
 }

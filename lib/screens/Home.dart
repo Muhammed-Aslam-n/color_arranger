@@ -1,8 +1,10 @@
+import 'package:color_arranger/controller/getx_controller.dart';
 import 'package:color_arranger/screens/color_chart.dart';
 import 'package:color_arranger/widget/common_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttericon/entypo_icons.dart';
+import 'package:get/get.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 
 class Home extends StatefulWidget {
@@ -13,65 +15,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final colorChangerController = ColorChangerController.colorChangerController;
   double scrollSpeedVariable = 5;
-  final blackSet = [
-    "assets/images/grid_images/set_black/black1.png",
-  ];
-  final blueSet = [
-    "assets/images/grid_images/set_blue/blue1.png",
-    "assets/images/grid_images/set_blue/blue2.png",
-    "assets/images/grid_images/set_blue/blue3.png",
-  ];
-  final greenSet = [
-    "assets/images/grid_images/set_green/green1.png",
-    "assets/images/grid_images/set_green/green2.png",
-    "assets/images/grid_images/set_green/green3.png",
-  ];
-  final orangeSet = [
-    "assets/images/grid_images/set_orange/orange1.png",
-    "assets/images/grid_images/set_orange/orange2.png",
-    "assets/images/grid_images/set_orange/orange3.png",
-  ];
-
-  final pinkSet = [
-    "assets/images/grid_images/set_pink/pink1.png",
-    "assets/images/grid_images/set_pink/pink2.png",
-    "assets/images/grid_images/set_pink/pink3.png",
-  ];
-  final purpleSet = [
-    "assets/images/grid_images/set_purple/purple1.png",
-    "assets/images/grid_images/set_purple/purple2.png",
-    "assets/images/grid_images/set_purple/purple3.png",
-  ];
-  final redSet = [
-    "assets/images/grid_images/set_red/red1.png",
-    "assets/images/grid_images/set_red/red2.png",
-    "assets/images/grid_images/set_red/red3.png",
-  ];
-  final tealSet = [
-    "assets/images/grid_images/set_teal/teal1.png",
-    "assets/images/grid_images/set_teal/teal2.png",
-    "assets/images/grid_images/set_teal/teal2.png",
-  ];
-  final yellowSet = [
-    "assets/images/grid_images/set_yellow/yellow1.png",
-  ];
-
-  ValueNotifier<List<Map<String, dynamic>>> palletList = ValueNotifier([]);
-
   @override
   void initState() {
-    palletList.value = [
-      {"name": blackSet, "color": "BLACK"},
-      {"name": blueSet, "color": "BLUE"},
-      {"name": greenSet, "color": "GREEN"},
-      {"name": orangeSet, "color": "ORANGE"},
-      {"name": pinkSet, "color": "PINK"},
-      {"name": purpleSet, "color": "PURPLE"},
-      {"name": redSet, "color": "RED"},
-      {"name": tealSet, "color": "TEAL"},
-      {"name": yellowSet, "color": "YELLOW"},
-    ];
+    colorChangerController.setPalletListValues();
     super.initState();
   }
 
@@ -95,41 +43,43 @@ class _HomeState extends State<Home> {
               child: SizedBox(
                 height: 300.h,
                 width: MediaQuery.of(context).size.width,
-                child: ReorderableGridView.count(
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  crossAxisCount: 3,
-                  childAspectRatio: 1 / 0.8,
-                  children: palletList.value.map((e) {
-                    if (e['name'].length > 1) {
-                      return buildImageItem(
-                          url: e['name'][0],
-                          isMultiple: true,
-                          index: palletList.value.indexOf(e));
-                    }
-                    return buildImageItem(url: e['name'][0]);
-                  }).toList(),
-                  scrollSpeedController: (int timeInMilliSecond,
-                      double overSize, double itemSize) {
-                    if (timeInMilliSecond > 1500) {
-                      scrollSpeedVariable = 15;
-                    } else {
-                      scrollSpeedVariable = 5;
-                    }
-                    return scrollSpeedVariable;
-                  },
-                  onReorder: (oldIndex, newIndex) {
-                    setState(() {
-                      final element = palletList.value.removeAt(oldIndex);
-                      palletList.value.insert(newIndex, element);
-                    });
-                  },
-                  dragWidgetBuilder: (index, child) {
-                    return const Card(
-                      color: Colors.blue,
-                      child: Text("Selected"),
+                child: GetBuilder<ColorChangerController>(
+
+                  builder: (colorChangerController) {
+                    return ReorderableGridView.count(
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      crossAxisCount: 3,
+                      childAspectRatio: 1 / 0.8,
+                      children: colorChangerController.palletList!.map((palletElements) {
+                        if (palletElements['name'].length > 1) {
+                          return buildImageItem(
+                              url: palletElements['name'][0],
+                              isMultiple: true,
+                              index: colorChangerController.palletList!.indexOf(palletElements));
+                        }
+                        return buildImageItem(url: palletElements['name'][0]);
+                      }).toList(),
+                      scrollSpeedController: (int timeInMilliSecond,
+                          double overSize, double itemSize) {
+                        if (timeInMilliSecond > 1500) {
+                          scrollSpeedVariable = 15;
+                        } else {
+                          scrollSpeedVariable = 5;
+                        }
+                        return scrollSpeedVariable;
+                      },
+                      onReorder: (oldIndex, newIndex) {
+                        ColorChangerController.colorChangerController.updatePalletSet(oldIndex: oldIndex, newIndex: newIndex);
+                      },
+                      dragWidgetBuilder: (index, child) {
+                        return const Card(
+                          color: Colors.blue,
+                          child: Text("Selected"),
+                        );
+                      },
                     );
-                  },
+                  }
                 ),
               ),
             ),
@@ -141,14 +91,7 @@ class _HomeState extends State<Home> {
               textColor: Colors.black,
               bgColor: Colors.green,
               onPressed: () {
-                Navigator.push(
-                  context,
-                  (MaterialPageRoute(
-                    builder: (context) => Chart(
-                      palletList: palletList,
-                    ),
-                  )),
-                );
+                Get.to(() => Chart());
               },
             ),
           ],
@@ -164,7 +107,7 @@ class _HomeState extends State<Home> {
         key: ValueKey(url),
         child: GestureDetector(
           onTap: () {
-            showPalletVariants(palletList.value[index]);
+            showPalletVariants(colorChangerController.palletList![index]);
           },
           child: Stack(
             children: [

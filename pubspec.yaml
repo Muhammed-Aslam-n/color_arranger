@@ -37,6 +37,7 @@ dependencies:
   reorderable_grid_view: any
   flutter_screenutil: any
   fluttericon: any
+  get: any
 
 
 
