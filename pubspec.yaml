@@ -1,5 +1,5 @@
 name: color_arranger
-description: A new Flutter project.
+description: A Puzzle Arranging Game
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -34,6 +34,11 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  reorderable_grid_view: any
+  flutter_screenutil: any
+  fluttericon: any
+
+
 
 dev_dependencies:
   flutter_test:
@@ -58,9 +63,18 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+     - assets/images/grid_images/set_black/
+     - assets/images/grid_images/set_blue/
+     - assets/images/grid_images/set_green/
+     - assets/images/grid_images/set_pink/
+     - assets/images/grid_images/set_orange/
+     - assets/images/grid_images/set_purple/
+     - assets/images/grid_images/set_red/
+     - assets/images/grid_images/set_teal/
+     - assets/images/grid_images/set_yellow/
+     - assets/images/splash_screen_icon/
+     - assets/images/grid_images/icon_grid_overlay/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -73,10 +87,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+     - family: Poppins
+       fonts:
+         - asset: assets/fonts/Poppins-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
